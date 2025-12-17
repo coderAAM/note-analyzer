@@ -16,8 +16,8 @@ import {
   LogIn, 
   LogOut, 
   User,
-  ChevronDown,
-  ChevronUp 
+  ChevronUp,
+  Info
 } from "lucide-react";
 
 const Index = () => {
@@ -103,10 +103,24 @@ const Index = () => {
 
   const handleSignOut = async () => {
     await signOut();
+    setAnalysisData(null);
+    setCurrentNotes("");
     toast({
       title: "Signed out",
       description: "You've been signed out successfully.",
     });
+  };
+
+  const handleSaveClick = () => {
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to save your study sessions.",
+      });
+      navigate("/auth");
+      return;
+    }
+    setShowSaveDialog(true);
   };
 
   return (
@@ -127,7 +141,10 @@ const Index = () => {
                 {user.email}
               </span>
             ) : (
-              <span>Not signed in</span>
+              <span className="flex items-center gap-2">
+                <Info className="w-4 h-4" />
+                Sign in to save sessions
+              </span>
             )}
           </div>
           
@@ -166,7 +183,7 @@ const Index = () => {
                 className="gap-2"
               >
                 <LogIn className="w-4 h-4" />
-                Sign in to save
+                Sign in
               </Button>
             )}
           </div>
@@ -201,23 +218,25 @@ const Index = () => {
         )}
         
         <div className="space-y-8">
-          <NotesInput onAnalyze={handleAnalyze} isLoading={isLoading} />
+          <NotesInput 
+            onAnalyze={handleAnalyze} 
+            isLoading={isLoading} 
+            initialNotes={currentNotes}
+          />
           
           {analysisData && (
             <>
-              {/* Save button */}
-              {user && (
-                <div className="flex justify-end">
-                  <Button
-                    onClick={() => setShowSaveDialog(true)}
-                    variant="outline"
-                    className="gap-2"
-                  >
-                    <Save className="w-4 h-4" />
-                    Save Session
-                  </Button>
-                </div>
-              )}
+              {/* Save button - always visible */}
+              <div className="flex justify-end gap-3">
+                <Button
+                  onClick={handleSaveClick}
+                  variant="outline"
+                  className="gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  {user ? "Save Session" : "Sign in to Save"}
+                </Button>
+              </div>
               
               <AnalysisResults data={analysisData} />
             </>

@@ -2,3 +2,6 @@ project_id = "dduywwbripgzildwqytk"
 
 [functions.analyze-notes]
 verify_jwt = false
+
+[functions.extract-text]
+verify_jwt = false
