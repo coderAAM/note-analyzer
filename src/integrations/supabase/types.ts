@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      study_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          important_points: Json
+          long_questions: Json
+          mcqs: Json
+          notes: string
+          short_questions: Json
+          summary: string
+          title: string
+          updated_at: string
+          user_id: string
+          viva_questions: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          important_points?: Json
+          long_questions?: Json
+          mcqs?: Json
+          notes: string
+          short_questions?: Json
+          summary: string
+          title: string
+          updated_at?: string
+          user_id: string
+          viva_questions?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          important_points?: Json
+          long_questions?: Json
+          mcqs?: Json
+          notes?: string
+          short_questions?: Json
+          summary?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          viva_questions?: Json
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
