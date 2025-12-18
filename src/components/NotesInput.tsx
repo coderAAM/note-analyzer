@@ -1,8 +1,7 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { BookOpen, Sparkles, FileText, Upload, X, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { BookOpen, Sparkles, FileText, Upload, X, Loader2, Camera } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface NotesInputProps {
@@ -10,6 +9,12 @@ interface NotesInputProps {
   isLoading: boolean;
   initialNotes?: string;
 }
+
+const isImageFile = (file: File): boolean => {
+  const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif'];
+  return imageTypes.includes(file.type) || 
+    /\.(jpg|jpeg|png|gif|webp|heic|heif)$/i.test(file.name);
+};
 
 export const NotesInput = ({ onAnalyze, isLoading, initialNotes = "" }: NotesInputProps) => {
   const [notes, setNotes] = useState(initialNotes);
@@ -38,24 +43,26 @@ export const NotesInput = ({ onAnalyze, isLoading, initialNotes = "" }: NotesInp
       return;
     }
 
-    // Check file type
-    const allowedTypes = [
+    // Check file type - now includes images
+    const allowedDocTypes = [
       'text/plain',
       'application/pdf',
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ];
     
-    const isAllowed = allowedTypes.includes(file.type) || 
+    const isDoc = allowedDocTypes.includes(file.type) || 
       file.name.endsWith('.txt') || 
       file.name.endsWith('.pdf') || 
       file.name.endsWith('.docx') ||
       file.name.endsWith('.doc');
 
-    if (!isAllowed) {
+    const isImage = isImageFile(file);
+
+    if (!isDoc && !isImage) {
       toast({
         title: "Unsupported file type",
-        description: "Please upload TXT, PDF, or DOCX files.",
+        description: "Please upload TXT, PDF, DOCX, or image files (JPG, PNG).",
         variant: "destructive",
       });
       return;
@@ -120,7 +127,7 @@ export const NotesInput = ({ onAnalyze, isLoading, initialNotes = "" }: NotesInp
               Your Study Notes
             </h2>
             <p className="text-sm text-muted-foreground">
-              Paste notes or upload a file
+              Paste notes, upload a file, or scan handwritten notes
             </p>
           </div>
         </div>
@@ -130,7 +137,7 @@ export const NotesInput = ({ onAnalyze, isLoading, initialNotes = "" }: NotesInp
           <input
             ref={fileInputRef}
             type="file"
-            accept=".txt,.pdf,.doc,.docx"
+            accept=".txt,.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,.heic"
             onChange={handleFileSelect}
             className="hidden"
             id="file-upload"
@@ -149,8 +156,8 @@ export const NotesInput = ({ onAnalyze, isLoading, initialNotes = "" }: NotesInp
               </>
             ) : (
               <>
-                <Upload className="w-4 h-4" />
-                Upload File
+                <Camera className="w-4 h-4" />
+                Upload / Scan
               </>
             )}
           </Button>
@@ -160,9 +167,14 @@ export const NotesInput = ({ onAnalyze, isLoading, initialNotes = "" }: NotesInp
       {/* Show uploaded file info */}
       {uploadedFile && (
         <div className="flex items-center gap-2 mb-4 p-3 bg-primary/5 rounded-lg border border-primary/20">
-          <FileText className="w-4 h-4 text-primary" />
+          {isImageFile(uploadedFile) ? (
+            <Camera className="w-4 h-4 text-primary" />
+          ) : (
+            <FileText className="w-4 h-4 text-primary" />
+          )}
           <span className="text-sm text-foreground flex-1 truncate">
             {uploadedFile.name}
+            {isImageFile(uploadedFile) && " (OCR)"}
           </span>
           <Button
             variant="ghost"
@@ -183,7 +195,7 @@ export const NotesInput = ({ onAnalyze, isLoading, initialNotes = "" }: NotesInp
 Example:
 Photosynthesis is the process by which plants convert sunlight into energy. It occurs in the chloroplasts and involves two main stages: the light-dependent reactions and the Calvin cycle...
 
-Or click 'Upload File' to upload a TXT, PDF, or DOCX file."
+Or click 'Upload / Scan' to upload documents or photos of handwritten notes."
         className="min-h-[280px] resize-none bg-background/50 border-border/50 focus:border-primary/50 transition-colors text-base leading-relaxed placeholder:text-muted-foreground/60"
       />
 
