@@ -16,6 +16,7 @@ export interface StudySession {
   viva_questions: AnalysisData["vivaQuestions"];
   created_at: string;
   updated_at: string;
+  share_token?: string | null;
 }
 
 export const useStudySessions = () => {
@@ -51,6 +52,7 @@ export const useStudySessions = () => {
         viva_questions: session.viva_questions as AnalysisData["vivaQuestions"],
         created_at: session.created_at,
         updated_at: session.updated_at,
+        share_token: session.share_token,
       }));
 
       setSessions(formattedSessions);
@@ -142,6 +144,42 @@ export const useStudySessions = () => {
     }
   };
 
+  const generateShareLink = async (sessionId: string): Promise<string | null> => {
+    try {
+      // Check if session already has a share token
+      const session = sessions.find((s) => s.id === sessionId);
+      if (session?.share_token) {
+        return `${window.location.origin}/share/${session.share_token}`;
+      }
+
+      // Generate new share token
+      const shareToken = crypto.randomUUID();
+      const { error } = await supabase
+        .from("study_sessions")
+        .update({ share_token: shareToken })
+        .eq("id", sessionId);
+
+      if (error) throw error;
+
+      // Update local state
+      setSessions((prev) =>
+        prev.map((s) =>
+          s.id === sessionId ? { ...s, share_token: shareToken } : s
+        )
+      );
+
+      return `${window.location.origin}/share/${shareToken}`;
+    } catch (error) {
+      console.error("Error generating share link:", error);
+      toast({
+        title: "Share failed",
+        description: "Could not generate share link.",
+        variant: "destructive",
+      });
+      return null;
+    }
+  };
+
   useEffect(() => {
     fetchSessions();
   }, [user]);
@@ -151,6 +189,7 @@ export const useStudySessions = () => {
     loading,
     saveSession,
     deleteSession,
+    generateShareLink,
     refetch: fetchSessions,
   };
 };

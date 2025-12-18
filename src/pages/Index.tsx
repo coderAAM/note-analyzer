@@ -31,7 +31,7 @@ const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user, signOut, loading: authLoading } = useAuth();
-  const { sessions, loading: sessionsLoading, saveSession, deleteSession } = useStudySessions();
+  const { sessions, loading: sessionsLoading, saveSession, deleteSession, generateShareLink } = useStudySessions();
 
   const handleAnalyze = async (notes: string) => {
     setIsLoading(true);
@@ -213,6 +213,7 @@ const Index = () => {
               loading={sessionsLoading}
               onLoad={handleLoadSession}
               onDelete={handleDeleteSession}
+              onShare={generateShareLink}
             />
           </div>
         )}

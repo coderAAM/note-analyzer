@@ -1,14 +1,17 @@
+import { useState } from "react";
 import { StudySession } from "@/hooks/useStudySessions";
 import { Button } from "@/components/ui/button";
-import { Clock, Trash2, FileText, ChevronRight } from "lucide-react";
+import { Clock, Trash2, FileText, ChevronRight, Share2, Check, Link } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface SavedSessionsListProps {
   sessions: StudySession[];
   loading: boolean;
   onLoad: (session: StudySession) => void;
   onDelete: (sessionId: string) => void;
+  onShare: (sessionId: string) => Promise<string | null>;
 }
 
 export const SavedSessionsList = ({
@@ -16,7 +19,24 @@ export const SavedSessionsList = ({
   loading,
   onLoad,
   onDelete,
+  onShare,
 }: SavedSessionsListProps) => {
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  const handleShare = async (e: React.MouseEvent, sessionId: string) => {
+    e.stopPropagation();
+    const link = await onShare(sessionId);
+    if (link) {
+      await navigator.clipboard.writeText(link);
+      setCopiedId(sessionId);
+      toast({
+        title: "Link copied!",
+        description: "Share link has been copied to clipboard.",
+      });
+      setTimeout(() => setCopiedId(null), 2000);
+    }
+  };
   if (loading) {
     return (
       <div className="space-y-3">
@@ -72,6 +92,19 @@ export const SavedSessionsList = ({
               </div>
             </button>
             <div className="flex items-center gap-1 shrink-0">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-primary"
+                onClick={(e) => handleShare(e, session.id)}
+                title="Share session"
+              >
+                {copiedId === session.id ? (
+                  <Check className="w-4 h-4 text-green-500" />
+                ) : (
+                  <Share2 className="w-4 h-4" />
+                )}
+              </Button>
               <Button
                 variant="ghost"
                 size="icon"
