@@ -12,7 +12,12 @@ const isImageFile = (file: File): boolean => {
     /\.(jpg|jpeg|png|gif|webp|heic|heif)$/i.test(file.name);
 };
 
-const extractTextFromImage = async (file: File): Promise<string> => {
+const isDocxFile = (file: File): boolean => {
+  return file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+    file.name.endsWith('.docx');
+};
+
+const extractTextWithAI = async (file: File, isImage: boolean): Promise<string> => {
   const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
   if (!LOVABLE_API_KEY) {
     throw new Error("LOVABLE_API_KEY is not configured");
@@ -20,9 +25,13 @@ const extractTextFromImage = async (file: File): Promise<string> => {
 
   const arrayBuffer = await file.arrayBuffer();
   const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-  const mimeType = file.type || 'image/jpeg';
+  const mimeType = file.type || (isImage ? 'image/jpeg' : 'application/octet-stream');
 
-  console.log('Sending image to Gemini for OCR...');
+  console.log(`Sending ${isImage ? 'image' : 'document'} to Gemini for text extraction...`);
+
+  const prompt = isImage 
+    ? "Extract all the text from this image of handwritten or printed notes. Preserve the structure and formatting as much as possible. Only return the extracted text, nothing else. If you cannot read something, indicate it with [illegible]."
+    : "Extract all the text content from this document. Preserve the structure, headings, paragraphs, and formatting as much as possible. Only return the extracted text content, nothing else.";
 
   const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
@@ -38,7 +47,7 @@ const extractTextFromImage = async (file: File): Promise<string> => {
           content: [
             {
               type: "text",
-              text: "Extract all the text from this image of handwritten or printed notes. Preserve the structure and formatting as much as possible. Only return the extracted text, nothing else. If you cannot read something, indicate it with [illegible]."
+              text: prompt
             },
             {
               type: "image_url",
@@ -54,8 +63,8 @@ const extractTextFromImage = async (file: File): Promise<string> => {
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error("OCR API error:", response.status, errorText);
-    throw new Error("Failed to extract text from image");
+    console.error("AI API error:", response.status, errorText);
+    throw new Error(`Failed to extract text from ${isImage ? 'image' : 'document'}`);
   }
 
   const data = await response.json();
@@ -82,11 +91,17 @@ serve(async (req) => {
 
     let extractedText = '';
 
-    // Handle image files with OCR
+    // Handle image files with OCR via AI
     if (isImageFile(file)) {
-      console.log('Processing image with OCR...');
-      extractedText = await extractTextFromImage(file);
+      console.log('Processing image with AI OCR...');
+      extractedText = await extractTextWithAI(file, true);
       console.log(`Extracted ${extractedText.length} characters from image via OCR`);
+    }
+    // Handle DOCX files with AI
+    else if (isDocxFile(file)) {
+      console.log('Processing DOCX with AI...');
+      extractedText = await extractTextWithAI(file, false);
+      console.log(`Extracted ${extractedText.length} characters from DOCX via AI`);
     }
     // Handle plain text files
     else if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
@@ -128,46 +143,15 @@ serve(async (req) => {
       
       console.log(`Extracted ${extractedText.length} characters from PDF`);
     } 
-    // Handle DOCX files
-    else if (
-      file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-      file.name.endsWith('.docx')
-    ) {
-      const arrayBuffer = await file.arrayBuffer();
-      const bytes = new Uint8Array(arrayBuffer);
-      
-      const decoder = new TextDecoder('utf-8', { fatal: false });
-      const content = decoder.decode(bytes);
-      
-      const textMatches = content.match(/<w:t[^>]*>([^<]+)<\/w:t>/g);
-      if (textMatches) {
-        extractedText = textMatches
-          .map(match => {
-            const text = match.replace(/<[^>]+>/g, '');
-            return text;
-          })
-          .join(' ');
-      }
-      
-      if (!extractedText || extractedText.length < 20) {
-        return new Response(
-          JSON.stringify({ 
-            error: 'Could not extract text from DOCX. Please copy and paste the text manually.' 
-          }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      
-      console.log(`Extracted ${extractedText.length} characters from DOCX`);
-    } else {
+    else {
       return new Response(
         JSON.stringify({ error: 'Unsupported file type. Please upload TXT, PDF, DOCX, or image files (JPG, PNG, etc.).' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Clean up extracted text (skip for OCR since it's already clean)
-    if (!isImageFile(file)) {
+    // Clean up extracted text (skip for AI-processed files since they're already clean)
+    if (!isImageFile(file) && !isDocxFile(file)) {
       extractedText = extractedText
         .replace(/\s+/g, ' ')
         .replace(/[^\x20-\x7E\u0600-\u06FF\u0900-\u097F]/g, ' ')
