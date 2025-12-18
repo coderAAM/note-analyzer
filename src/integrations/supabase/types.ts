@@ -22,6 +22,7 @@ export type Database = {
           long_questions: Json
           mcqs: Json
           notes: string
+          share_token: string | null
           short_questions: Json
           summary: string
           title: string
@@ -36,6 +37,7 @@ export type Database = {
           long_questions?: Json
           mcqs?: Json
           notes: string
+          share_token?: string | null
           short_questions?: Json
           summary: string
           title: string
@@ -50,6 +52,7 @@ export type Database = {
           long_questions?: Json
           mcqs?: Json
           notes?: string
+          share_token?: string | null
           short_questions?: Json
           summary?: string
           title?: string
