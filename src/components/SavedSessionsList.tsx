@@ -77,9 +77,17 @@ export const SavedSessionsList = ({
               onClick={() => onLoad(session)}
               className="flex-1 text-left hover:opacity-80 transition-opacity"
             >
-              <h4 className="font-medium text-foreground line-clamp-1 group-hover:text-primary transition-colors">
-                {session.title}
-              </h4>
+              <div className="flex items-center gap-2">
+                <h4 className="font-medium text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+                  {session.title}
+                </h4>
+                {session.share_token && (
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium bg-primary/10 text-primary rounded-full">
+                    <Link className="w-2.5 h-2.5" />
+                    Shared
+                  </span>
+                )}
+              </div>
               <div className="flex items-center gap-2 mt-1.5 text-xs text-muted-foreground">
                 <Clock className="w-3 h-3" />
                 <span>
