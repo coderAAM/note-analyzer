@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ImportantPoints } from "./results/ImportantPoints";
 import { Summary } from "./results/Summary";
+import { DetailedNotes } from "./results/DetailedNotes";
 import { MCQSection } from "./results/MCQSection";
 import { ShortQuestions } from "./results/ShortQuestions";
 import { LongQuestions } from "./results/LongQuestions";
@@ -13,12 +14,18 @@ import {
   MessageSquare, 
   BookOpen, 
   Mic, 
-  GraduationCap 
+  GraduationCap,
+  NotebookPen
 } from "lucide-react";
 
 export interface AnalysisData {
   importantPoints: string[];
   summary: string;
+  detailedNotes?: {
+    heading: string;
+    content: string;
+    keyPoints?: string[];
+  }[];
   mcqs: {
     question: string;
     options: string[];
@@ -69,6 +76,10 @@ export const AnalysisResults = ({ data }: AnalysisResultsProps) => {
             <FileText className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Summary</span>
           </TabsTrigger>
+          <TabsTrigger value="detailed" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <NotebookPen className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Detailed</span>
+          </TabsTrigger>
           <TabsTrigger value="mcqs" className="gap-1.5 data-[state=active]:bg-card data-[state=active]:shadow-soft">
             <ListChecks className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">MCQs</span>
@@ -97,6 +108,10 @@ export const AnalysisResults = ({ data }: AnalysisResultsProps) => {
 
         <TabsContent value="summary" className="mt-0">
           <Summary content={data.summary} />
+        </TabsContent>
+
+        <TabsContent value="detailed" className="mt-0">
+          <DetailedNotes notes={data.detailedNotes || []} />
         </TabsContent>
 
         <TabsContent value="mcqs" className="mt-0">
