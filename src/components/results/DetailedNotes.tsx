@@ -1,0 +1,112 @@
+import { useState } from "react";
+import { ChevronDown, ChevronUp, BookOpen, Lightbulb } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+interface DetailedNote {
+  heading: string;
+  content: string;
+  keyPoints?: string[];
+}
+
+interface DetailedNotesProps {
+  notes: DetailedNote[];
+}
+
+export const DetailedNotes = ({ notes }: DetailedNotesProps) => {
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
+
+  const toggleExpand = (index: number) => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
+
+  if (!notes || notes.length === 0) {
+    return (
+      <div className="text-center py-8 text-muted-foreground">
+        No detailed notes available
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-2 mb-4">
+        <BookOpen className="w-5 h-5 text-primary" />
+        <h3 className="font-display text-lg font-semibold text-foreground">
+          Detailed Explanations
+        </h3>
+      </div>
+      
+      <div className="space-y-3">
+        {notes.map((note, index) => (
+          <div
+            key={index}
+            className={cn(
+              "rounded-xl border border-border/50 overflow-hidden transition-all duration-300",
+              expandedIndex === index ? "bg-card shadow-soft" : "bg-muted/30 hover:bg-muted/50"
+            )}
+          >
+            {/* Heading - Clickable */}
+            <button
+              onClick={() => toggleExpand(index)}
+              className="w-full flex items-center justify-between p-4 text-left"
+            >
+              <div className="flex items-center gap-3">
+                <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary font-semibold text-sm">
+                  {index + 1}
+                </span>
+                <h4 className="font-display font-semibold text-foreground">
+                  {note.heading}
+                </h4>
+              </div>
+              {expandedIndex === index ? (
+                <ChevronUp className="w-5 h-5 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-muted-foreground" />
+              )}
+            </button>
+
+            {/* Content - Expanded */}
+            {expandedIndex === index && (
+              <div className="px-4 pb-4 animate-slide-up">
+                <div className="pl-11 space-y-4">
+                  {/* Main Content Paragraph */}
+                  <p className="text-foreground/90 leading-relaxed whitespace-pre-wrap">
+                    {note.content}
+                  </p>
+
+                  {/* Key Points */}
+                  {note.keyPoints && note.keyPoints.length > 0 && (
+                    <div className="mt-4 p-3 rounded-lg bg-accent/10 border border-accent/20">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Lightbulb className="w-4 h-4 text-accent" />
+                        <span className="text-sm font-medium text-accent">Key Takeaways</span>
+                      </div>
+                      <ul className="space-y-1.5">
+                        {note.keyPoints.map((point, pIndex) => (
+                          <li key={pIndex} className="flex items-start gap-2 text-sm text-foreground/80">
+                            <span className="text-accent mt-1">•</span>
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Expand/Collapse All */}
+      <div className="flex justify-center pt-2">
+        <button
+          onClick={() => setExpandedIndex(expandedIndex === null ? 0 : null)}
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          {expandedIndex !== null ? "Collapse All" : "Expand First"}
+        </button>
+      </div>
+    </div>
+  );
+};

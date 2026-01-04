@@ -14,7 +14,14 @@ Analyze the study notes provided and perform the following actions:
 
 2. **Create a Simple Summary**: Generate a short, easy-to-understand summary (150-200 words). Explain complex concepts in simple language suitable for beginners.
 
-3. **Generate Questions from the Notes** (STRICTLY based on the given notes only):
+3. **Create Detailed Notes**: Create comprehensive, well-structured notes with proper headings and detailed paragraphs. Break down each topic with:
+   - Main heading for each concept
+   - Detailed explanation in paragraph form
+   - Examples where applicable
+   - Key takeaways
+   Format it like professional study notes that a teacher would write.
+
+4. **Generate Questions from the Notes** (STRICTLY based on the given notes only):
 
    a) **MCQs**: Generate 10 multiple choice questions. Each MCQ should have exactly 4 options. Provide the correct answer index (0-3).
    
@@ -29,11 +36,19 @@ Analyze the study notes provided and perform the following actions:
 - Keep the language simple, clear, and exam-oriented
 - Be supportive and student-friendly
 - All questions and answers must be derived from the provided content
+- For detailed notes, use proper Markdown formatting with ## for headings
 
 Return your response as a valid JSON object with this exact structure:
 {
   "importantPoints": ["point1", "point2", ...],
   "summary": "summary text",
+  "detailedNotes": [
+    {
+      "heading": "Topic Heading",
+      "content": "Detailed explanation paragraph with all the important information...",
+      "keyPoints": ["key point 1", "key point 2"]
+    }
+  ],
   "mcqs": [
     {
       "question": "question text",
@@ -155,7 +170,7 @@ serve(async (req) => {
     }
 
     // Validate the structure
-    const requiredFields = ['importantPoints', 'summary', 'mcqs', 'shortQuestions', 'longQuestions', 'vivaQuestions'];
+    const requiredFields = ['importantPoints', 'summary', 'detailedNotes', 'mcqs', 'shortQuestions', 'longQuestions', 'vivaQuestions'];
     for (const field of requiredFields) {
       if (!(field in analysisResult)) {
         console.error(`Missing required field: ${field}`);
