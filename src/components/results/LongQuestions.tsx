@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { ChevronDown, BookOpen } from "lucide-react";
+import { ChevronDown, BookOpen, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { exportLongQuestions } from "@/lib/exportPdf";
 
 interface LongQuestion {
   question: string;
@@ -16,6 +18,17 @@ export const LongQuestions = ({ questions }: LongQuestionsProps) => {
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => exportLongQuestions(questions)}
+          className="gap-2"
+        >
+          <Download className="w-4 h-4" />
+          <span className="hidden sm:inline">Export PDF</span>
+        </Button>
+      </div>
       {questions.map((q, index) => (
         <div
           key={index}

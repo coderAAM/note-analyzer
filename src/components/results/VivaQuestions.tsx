@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Mic, Eye, EyeOff } from "lucide-react";
+import { Mic, Eye, EyeOff, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { exportVivaQuestions } from "@/lib/exportPdf";
 
 interface VivaQuestion {
   question: string;
@@ -23,6 +24,17 @@ export const VivaQuestions = ({ questions }: VivaQuestionsProps) => {
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => exportVivaQuestions(questions)}
+          className="gap-2"
+        >
+          <Download className="w-4 h-4" />
+          <span className="hidden sm:inline">Export PDF</span>
+        </Button>
+      </div>
       <div className="bg-accent/10 rounded-xl p-4 border border-accent/20 mb-6">
         <div className="flex items-center gap-2 text-accent">
           <Mic className="w-4 h-4" />
