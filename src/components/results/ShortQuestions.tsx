@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { exportShortQuestions } from "@/lib/exportPdf";
 
 interface ShortQuestion {
   question: string;
@@ -15,7 +17,19 @@ export const ShortQuestions = ({ questions }: ShortQuestionsProps) => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => exportShortQuestions(questions)}
+          className="gap-2"
+        >
+          <Download className="w-4 h-4" />
+          <span className="hidden sm:inline">Export PDF</span>
+        </Button>
+      </div>
+      <div className="space-y-3">
       {questions.map((q, index) => (
         <div
           key={index}
@@ -46,7 +60,8 @@ export const ShortQuestions = ({ questions }: ShortQuestionsProps) => {
             </div>
           )}
         </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, XCircle, Eye, EyeOff } from "lucide-react";
+import { CheckCircle, XCircle, Eye, EyeOff, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { exportMCQs } from "@/lib/exportPdf";
 
 interface MCQ {
   question: string;
@@ -28,7 +29,16 @@ export const MCQSection = ({ mcqs }: MCQSectionProps) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => exportMCQs(mcqs)}
+          className="gap-2"
+        >
+          <Download className="w-4 h-4" />
+          <span className="hidden sm:inline">Export PDF</span>
+        </Button>
         <Button
           variant="outline"
           size="sm"
