@@ -3,6 +3,7 @@ import { ImportantPoints } from "./results/ImportantPoints";
 import { Summary } from "./results/Summary";
 import { DetailedNotes } from "./results/DetailedNotes";
 import { GraphSection } from "./results/GraphSection";
+import { GraphDiagramSection } from "./results/GraphDiagramSection";
 import { MCQSection } from "./results/MCQSection";
 import { ShortQuestions } from "./results/ShortQuestions";
 import { LongQuestions } from "./results/LongQuestions";
@@ -17,7 +18,8 @@ import {
   Mic, 
   GraduationCap,
   NotebookPen,
-  BarChart3
+  BarChart3,
+  GitBranch
 } from "lucide-react";
 
 export interface AnalysisData {
@@ -33,6 +35,13 @@ export interface AnalysisData {
     type: "bar" | "line" | "pie" | "area" | "comparison";
     data: { name: string; value: number; category?: string }[];
     description?: string;
+  }[];
+  graphDiagrams?: {
+    title: string;
+    type: "binary-tree" | "tree" | "graph" | "directed" | "flowchart" | "linked-list";
+    description?: string;
+    nodes: { id: string; label: string; level?: number }[];
+    edges: { from: string; to: string; label?: string }[];
   }[];
   mcqs: {
     question: string;
@@ -90,7 +99,11 @@ export const AnalysisResults = ({ data }: AnalysisResultsProps) => {
           </TabsTrigger>
           <TabsTrigger value="graphs" className="gap-1.5 data-[state=active]:bg-success data-[state=active]:text-success-foreground">
             <BarChart3 className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Graphs</span>
+            <span className="hidden sm:inline">Charts</span>
+          </TabsTrigger>
+          <TabsTrigger value="diagrams" className="gap-1.5 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
+            <GitBranch className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Diagrams</span>
           </TabsTrigger>
           <TabsTrigger value="mcqs" className="gap-1.5 data-[state=active]:bg-card data-[state=active]:shadow-soft">
             <ListChecks className="w-3.5 h-3.5" />
@@ -128,6 +141,10 @@ export const AnalysisResults = ({ data }: AnalysisResultsProps) => {
 
         <TabsContent value="graphs" className="mt-0">
           <GraphSection graphs={data.graphs || []} />
+        </TabsContent>
+
+        <TabsContent value="diagrams" className="mt-0">
+          <GraphDiagramSection diagrams={data.graphDiagrams || []} />
         </TabsContent>
 
         <TabsContent value="mcqs" className="mt-0">
