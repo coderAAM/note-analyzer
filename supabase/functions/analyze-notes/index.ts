@@ -21,16 +21,25 @@ Analyze the study notes provided and perform the following actions:
    - Key takeaways
    Format it like professional study notes that a teacher would write.
 
-4. **Generate Graphs/Charts**: If the notes contain any data, statistics, comparisons, processes, or concepts that can be visualized, create appropriate graphs. Types supported:
-   - "bar": For comparing quantities (e.g., population of countries)
-   - "line": For trends over time (e.g., temperature changes)
-   - "pie": For showing proportions (e.g., budget distribution)
-   - "area": For cumulative data over time
-   - "comparison": For comparing multiple items with multiple attributes
-   
-   Only generate graphs if the content genuinely has visualizable data. Each graph needs a title, type, and data array with name/value pairs (and optional "category" for grouped bar charts).
+4. **Generate Data Charts**: If the notes contain any data, statistics, comparisons that can be visualized with charts:
+   - "bar": For comparing quantities
+   - "line": For trends over time
+   - "pie": For showing proportions
+   - "area": For cumulative data
 
-5. **Generate Questions from the Notes** (STRICTLY based on the given notes only):
+5. **Generate Graph Theory Diagrams**: If the notes contain graph theory concepts (trees, networks, linked lists, binary trees, graphs, DAGs, flowcharts, state machines, etc.), create visual node-edge diagrams:
+   - Each diagram needs a title, type, nodes array, and edges array
+   - Types: "tree", "graph", "directed", "flowchart", "binary-tree", "linked-list"
+   - Nodes: array of {id, label, (optional) level for trees}
+   - Edges: array of {from, to, (optional) label for edge labels}
+   
+   Examples:
+   - Binary tree: nodes with parent-child relationships
+   - Linked list: sequential nodes
+   - Graph: nodes with various connections
+   - Flowchart: process steps
+
+6. **Generate Questions from the Notes** (STRICTLY based on the given notes only):
 
    a) **MCQs**: Generate 10 multiple choice questions. Each MCQ should have exactly 4 options. Provide the correct answer index (0-3).
    
@@ -46,7 +55,7 @@ Analyze the study notes provided and perform the following actions:
 - Be supportive and student-friendly
 - All questions and answers must be derived from the provided content
 - For detailed notes, use proper Markdown formatting with ## for headings
-- Only include graphs if the notes have actual data to visualize
+- Only include charts/diagrams if the notes have actual data or graph theory concepts
 
 Return your response as a valid JSON object with this exact structure:
 {
@@ -55,19 +64,34 @@ Return your response as a valid JSON object with this exact structure:
   "detailedNotes": [
     {
       "heading": "Topic Heading",
-      "content": "Detailed explanation paragraph with all the important information...",
+      "content": "Detailed explanation paragraph...",
       "keyPoints": ["key point 1", "key point 2"]
     }
   ],
   "graphs": [
     {
-      "title": "Graph Title",
-      "type": "bar|line|pie|area|comparison",
+      "title": "Chart Title",
+      "type": "bar|line|pie|area",
       "data": [
-        { "name": "Item 1", "value": 100 },
-        { "name": "Item 2", "value": 200 }
+        { "name": "Item 1", "value": 100 }
       ],
-      "description": "Brief explanation of what this graph shows"
+      "description": "What this chart shows"
+    }
+  ],
+  "graphDiagrams": [
+    {
+      "title": "Binary Search Tree Example",
+      "type": "binary-tree|tree|graph|directed|flowchart|linked-list",
+      "description": "Description of the diagram",
+      "nodes": [
+        { "id": "1", "label": "Root", "level": 0 },
+        { "id": "2", "label": "Left", "level": 1 },
+        { "id": "3", "label": "Right", "level": 1 }
+      ],
+      "edges": [
+        { "from": "1", "to": "2" },
+        { "from": "1", "to": "3" }
+      ]
     }
   ],
   "mcqs": [
