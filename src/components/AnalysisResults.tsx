@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ImportantPoints } from "./results/ImportantPoints";
 import { Summary } from "./results/Summary";
 import { DetailedNotes } from "./results/DetailedNotes";
+import { GraphSection } from "./results/GraphSection";
 import { MCQSection } from "./results/MCQSection";
 import { ShortQuestions } from "./results/ShortQuestions";
 import { LongQuestions } from "./results/LongQuestions";
@@ -15,7 +16,8 @@ import {
   BookOpen, 
   Mic, 
   GraduationCap,
-  NotebookPen
+  NotebookPen,
+  BarChart3
 } from "lucide-react";
 
 export interface AnalysisData {
@@ -25,6 +27,12 @@ export interface AnalysisData {
     heading: string;
     content: string;
     keyPoints?: string[];
+  }[];
+  graphs?: {
+    title: string;
+    type: "bar" | "line" | "pie" | "area" | "comparison";
+    data: { name: string; value: number; category?: string }[];
+    description?: string;
   }[];
   mcqs: {
     question: string;
@@ -80,6 +88,10 @@ export const AnalysisResults = ({ data }: AnalysisResultsProps) => {
             <NotebookPen className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Detailed</span>
           </TabsTrigger>
+          <TabsTrigger value="graphs" className="gap-1.5 data-[state=active]:bg-success data-[state=active]:text-success-foreground">
+            <BarChart3 className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Graphs</span>
+          </TabsTrigger>
           <TabsTrigger value="mcqs" className="gap-1.5 data-[state=active]:bg-card data-[state=active]:shadow-soft">
             <ListChecks className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">MCQs</span>
@@ -112,6 +124,10 @@ export const AnalysisResults = ({ data }: AnalysisResultsProps) => {
 
         <TabsContent value="detailed" className="mt-0">
           <DetailedNotes notes={data.detailedNotes || []} />
+        </TabsContent>
+
+        <TabsContent value="graphs" className="mt-0">
+          <GraphSection graphs={data.graphs || []} />
         </TabsContent>
 
         <TabsContent value="mcqs" className="mt-0">
