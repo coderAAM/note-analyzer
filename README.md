@@ -2,30 +2,30 @@
 
 ## Project Overview
 
-AI Study Portal ek web-based AI learning platform hai jo **Large Language Models (LLMs)**—specifically **Transformer-Based Models**—aur **Google Gemini AI API** ka use karke study content ko intelligently distribute karta hai.
+AI Study Portal is a web-based AI-powered learning platform that uses **Large Language Models (LLMs)**—specifically **Transformer-Based Models**—along with the **Google Gemini AI API** to intelligently generate and distribute educational content.
 
-Portal ka purpose students ko ek single platform par structured, categorized aur interactive learning material provide karna hai.
+The main objective of this portal is to provide students with a single, structured, and interactive platform for studying AI-assisted learning material.
 
-**Live URL:** [https://aistudy-henna.vercel.app/](https://aistudy-henna.vercel.app/)
+**Live Website:** [https://aistudy-henna.vercel.app/](https://aistudy-henna.vercel.app/)
 
 ---
 
-## Key Technologies Used
+## Technologies Used
 
 * **Frontend:** Next.js
 * **Backend:** Next.js (API Routes)
 * **Database:** Supabase
 * **Authentication:** Supabase Auth (User Login / Signup)
-* **AI Model:** Transformer-Based LLM
+* **AI Model:** Transformer-Based Large Language Model (LLM)
 * **AI API:** Google Gemini AI
 
 ---
 
-## Core Features
+## Key Features
 
 ### 1. AI-Based Content Distribution
 
-LLM ka use karke input text ko following categories mein automatically distribute kiya jata hai:
+The system uses an LLM to automatically analyze and distribute input text into the following categories:
 
 * Key Points
 * Summary
@@ -40,54 +40,54 @@ LLM ka use karke input text ko following categories mein automatically distribut
 
 ### 2. Image Understanding
 
-* AI **document images ko scan nahi karta**
-* Sirf **uploaded images** ko analyze karta hai
-* Image se relevant learning content generate karta hai
+* The AI **does not scan document images**
+* It analyzes **uploaded images only**
+* Relevant educational content is generated based on the image
 
 ### 3. Authentication-Based Access Control
 
-* User **login hoga tabhi**:
+* When a user is **logged in**:
 
-  * Document save karne ka button visible hoga
-  * Export (images / content) ka option milega
-* Without login:
+  * The document save button is enabled
+  * Export options (content/images) are available
+* When a user is **not logged in**:
 
-  * Sirf view access
-  * Save / export features disabled rahenge
+  * Only view access is allowed
+  * Save and export features are disabled
 
 ### 4. Data Storage
 
-* User ke saved documents aur generated content **Supabase database** mein store hote hain
+* User-generated and saved documents are securely stored in the **Supabase database**
 
 ---
 
 ## System Architecture
 
-1. User text ya image upload karta hai
-2. Google Gemini AI API ko request jati hai
-3. Transformer-Based LLM content analyze karta hai
-4. Output multiple educational categories mein divide hota hai
-5. Logged-in users data save/export kar sakte hain
+1. User uploads text or an image
+2. A request is sent to the Google Gemini AI API
+3. The Transformer-Based LLM processes the input
+4. Content is generated and distributed into educational categories
+5. Logged-in users can save or export the generated content
 
 ---
 
 ## Node Modules Folder Issue
 
-Agar project clone karne ke baad **node_modules folder missing** ho:
+If the **node_modules** folder is missing after cloning the project, follow these steps:
 
-### Installation Steps
+### Installation
 
 ```bash
 npm install
 ```
 
-Ya agar yarn use ho:
+Or if using Yarn:
 
 ```bash
 yarn install
 ```
 
-Iske baad project run karein:
+To run the project:
 
 ```bash
 npm run dev
@@ -97,26 +97,26 @@ npm run dev
 
 ## Important Notes
 
-* Time aur date jo automatically generate ho rahi ho, **final submission se pehle remove kar di jaye**
-* Demo ke liye **screenshots** attach karna recommended hai
-* Project academic purpose ke liye optimized hai
+* Any automatically generated **date and time should be removed** before final submission
+* Demo **screenshots should be added** for better explanation
+* The project is optimized for **academic submission**
 
 ---
 
-## Screenshots (Demo)
+## Demo Screenshots
 
-> (Yahan demo screenshots add kiye jayenge)
+> (Add demo screenshots here)
 
 * Home Page
-* AI Content Generation
+* AI Content Generation Page
 * Login Page
-* Saved Documents View
+* Saved Documents Page
 
 ---
 
 ## Conclusion
 
-AI Study Portal ek modern AI-powered educational system hai jo Transformer-Based LLMs aur Google Gemini AI ka effective use karta hai. Ye project students ke liye structured learning, automation aur intelligent content generation ka complete solution provide karta hai.
+AI Study Portal is a modern AI-driven educational system that demonstrates the effective use of Transformer-Based LLMs and Google Gemini AI for intelligent content generation and automation. The project provides a structured, secure, and user-friendly learning experience.
 
 ---
 
@@ -126,4 +126,4 @@ Ahmed Ali Mughal
 
 ---
 
-*Note: Ye README.md file portal submission aur project documentation ke liye use ki ja sakti hai.*
+*This README.md file is intended for project documentation and academic portal submission.*
