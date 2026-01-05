@@ -21,7 +21,16 @@ Analyze the study notes provided and perform the following actions:
    - Key takeaways
    Format it like professional study notes that a teacher would write.
 
-4. **Generate Questions from the Notes** (STRICTLY based on the given notes only):
+4. **Generate Graphs/Charts**: If the notes contain any data, statistics, comparisons, processes, or concepts that can be visualized, create appropriate graphs. Types supported:
+   - "bar": For comparing quantities (e.g., population of countries)
+   - "line": For trends over time (e.g., temperature changes)
+   - "pie": For showing proportions (e.g., budget distribution)
+   - "area": For cumulative data over time
+   - "comparison": For comparing multiple items with multiple attributes
+   
+   Only generate graphs if the content genuinely has visualizable data. Each graph needs a title, type, and data array with name/value pairs (and optional "category" for grouped bar charts).
+
+5. **Generate Questions from the Notes** (STRICTLY based on the given notes only):
 
    a) **MCQs**: Generate 10 multiple choice questions. Each MCQ should have exactly 4 options. Provide the correct answer index (0-3).
    
@@ -37,6 +46,7 @@ Analyze the study notes provided and perform the following actions:
 - Be supportive and student-friendly
 - All questions and answers must be derived from the provided content
 - For detailed notes, use proper Markdown formatting with ## for headings
+- Only include graphs if the notes have actual data to visualize
 
 Return your response as a valid JSON object with this exact structure:
 {
@@ -47,6 +57,17 @@ Return your response as a valid JSON object with this exact structure:
       "heading": "Topic Heading",
       "content": "Detailed explanation paragraph with all the important information...",
       "keyPoints": ["key point 1", "key point 2"]
+    }
+  ],
+  "graphs": [
+    {
+      "title": "Graph Title",
+      "type": "bar|line|pie|area|comparison",
+      "data": [
+        { "name": "Item 1", "value": 100 },
+        { "name": "Item 2", "value": 200 }
+      ],
+      "description": "Brief explanation of what this graph shows"
     }
   ],
   "mcqs": [
